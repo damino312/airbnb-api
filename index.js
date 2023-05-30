@@ -77,13 +77,19 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", async (req, res) => {
   const { token } = req.cookies;
-  res.json(token);
-  // if (token) {
-  //   jwt.verify(token, jwtSecret, {}, (err, user) => {
-  //     if (err) throw err;
-  //     res.json(user);
-  //   });
-  // }
+  // res.json(token);
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const { name, email, _id } = await User.findById(userData.id);
+
+      res.json({ name, email, _id });
+    });
+  }
+});
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "").json(true);
 });
 
 app.listen(4000);
