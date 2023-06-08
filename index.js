@@ -30,11 +30,9 @@ mongoose
   .connect(`mongodb://127.0.0.1:27017/airbnb`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    // Другие параметры конфигурации...
   })
   .then(() => {
     console.log("Connected to MongoDB");
-    // Здесь вы можете начать слушать сервер или выполнять другие операции
   })
   .catch((error) => {
     console.error("Failed to connect to MongoDB", error);
@@ -135,27 +133,32 @@ app.post("/places", (req, res) => {
     checkIn,
     checkOut,
     maxGuests,
+    price,
   } = req.body;
-
-  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-    if (err) throw err;
-    const placeDoc = await Place.create({
-      owner: userData.id,
-      title,
-      address,
-      photos: addedPhotos,
-      description,
-      perks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      maxGuests,
+  try {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const placeDoc = await Place.create({
+        owner: userData.id,
+        title,
+        address,
+        photos: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+      });
+      res.json(placeDoc);
     });
-    res.json(placeDoc);
-  });
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-app.get("/places", (req, res) => {
+app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
   try {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
@@ -185,28 +188,56 @@ app.put("/places", async (req, res) => {
     checkIn,
     checkOut,
     maxGuests,
+    price,
   } = req.body;
 
-  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-    if (err) throw err;
-    const placeDoc = await Place.findById(id);
+  try {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const placeDoc = await Place.findById(id);
 
-    if (userData.id === placeDoc.owner.toString()) {
-      placeDoc.set({
-        title,
-        address,
-        photos: addedPhotos,
-        description,
-        perks,
-        extraInfo,
-        checkIn,
-        checkOut,
-        maxGuests,
-      });
-      placeDoc.save();
-      res.json("ok");
-    }
-  });
+      if (userData.id === placeDoc.owner.toString()) {
+        placeDoc.set({
+          title,
+          address,
+          photos: addedPhotos,
+          description,
+          perks,
+          extraInfo,
+          checkIn,
+          checkOut,
+          maxGuests,
+          price,
+        });
+        placeDoc.save();
+        res.json("ok");
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 });
-// bug with commits
+
+app.get("/places", async (req, res) => {
+  res.json(await Place.find());
+});
+
+app.delete('/places/:id', async (req, res) => {
+  const { token } = req.cookies;
+  const {id} = req.params
+
+  
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => { 
+      if (err) throw err;
+      const placeDoc = await Place.findById(id);
+      if (userData.id === placeDoc.owner.toString()) {
+        await Place.findByIdAndDelete(id)
+        res.json("The place has been deleted")
+      }
+
+    })
+  
+  
+})
+
 app.listen(4000);
