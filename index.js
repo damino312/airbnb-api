@@ -7,16 +7,14 @@ const { default: mongoose } = require("mongoose");
 const User = require("./src/models/User");
 const cookieParser = require("cookie-parser");
 
+const imageDownloader = require("image-downloader");
 
+const PlaceRoutes = require("./src/routes/Place.route");
 
-const imageDownloader = require("image-downloader"); 
+app.use(PlaceRoutes);
 
-
-
-
-const PlaceRoutes = require("./src/routes/Place.route")
-
-app.use(PlaceRoutes)
+const BookingRoutes = require("./src/routes/Booking.route");
+app.use(BookingRoutes);
 
 require("dotenv").config(); // ЗАЧЕМ НУЖЕН ВЫЯСНИТЬ
 
@@ -97,20 +95,5 @@ app.get("/profile", async (req, res) => {
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json(true);
 });
-
-// app.post("/upload-by-link", async (req, res) => {
-//   const { link } = req.body;
-//   const newName = "photo_" + Date.now() + ".jpg";
-//   try {
-//     await imageDownloader.image({
-//       url: link,
-//       dest: __dirname + "/uploads/" + newName,
-//     });
-//     res.json(newName);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
-
 
 app.listen(4000);
