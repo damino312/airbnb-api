@@ -14,4 +14,6 @@ app.post("/booking", BookingController.bookThePlace);
 
 app.get("/bookings", BookingController.getBookingsOfUser);
 
+app.delete("/booking/:id", BookingController.deleteBooking);
+
 module.exports = app;
