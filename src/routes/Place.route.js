@@ -35,4 +35,6 @@ app.post(
 
 app.post("/upload-by-link", PlaceController.uploadPictureByLink);
 
+app.get("/searchByPlace", PlaceController.findByName)
+
 module.exports = app;

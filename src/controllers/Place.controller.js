@@ -158,6 +158,19 @@ const uploadPictureByLink = async (req, res) => {
   }
 };
 
+const findByName = async (req, res) => {
+  const query = req.query
+  console.log(query)
+  try {
+    const result = await Place.find({ title: { $regex: query.title, $options: 'i' } })
+    res.json(result)
+  } catch (error){
+    console.error(error)
+  }
+    
+ 
+}
+
 module.exports = {
   getAllPlaces,
   editPlaceInfo,
@@ -167,4 +180,5 @@ module.exports = {
   findUsersPlaces,
   uploadPlacesPictures,
   uploadPictureByLink,
+  findByName,
 };
