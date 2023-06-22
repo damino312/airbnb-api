@@ -33,6 +33,8 @@ const editPlaceInfo = async (req, res) => {
     price,
   } = req.body;
 
+  console.log(req.body);
+
   try {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
       if (err) throw err;
@@ -80,6 +82,7 @@ const addNewPlace = async (req, res) => {
     maxGuests,
     price,
   } = req.body;
+
   try {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
       if (err) throw err;
