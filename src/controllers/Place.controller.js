@@ -1,11 +1,12 @@
 const express = require("express");
 const app = express();
+require('dotenv').config();
 
 const Place = require("../models/Place");
 
 const jwt = require("jsonwebtoken");
 
-const jwtSecret = "sdafadfgjiaFDJA/;dfAJNKD;Nask"; // moveto .env
+const jwtSecret = process.env.jwtSecret;
 
 const fs = require("fs");
 

@@ -1,8 +1,9 @@
+require('dotenv').config();
 const Booking = require("../models/Booking");
 
 const jwt = require("jsonwebtoken");
 
-const jwtSecret = "sdafadfgjiaFDJA/;dfAJNKD;Nask"; // moveto .env
+const jwtSecret = process.env.jwtSecret;
 
 const bookThePlace = async (req, res) => {
   const { token } = req.cookies;
