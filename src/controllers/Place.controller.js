@@ -12,7 +12,7 @@ const fs = require("fs");
 
 const imageDownloader = require("image-downloader");
 
-app.use("/uploads", express.static("/tmp")); // uploading doesnt work without it here
+app.use("/uploads", express.static(__dirname, `../../tmp/`)); // uploading doesnt work without it here
 
 const getAllPlaces = async (req, res) => {
   res.json(await Place.find());
