@@ -13,7 +13,7 @@ app.use(UserRoutes);
 app.use("/uploads", express.static(__dirname + "/uploads"));
 
 mongoose
-  .connect(`mongodb://127.0.0.1:27017/airbnb`, {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
