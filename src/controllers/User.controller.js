@@ -13,9 +13,15 @@ const getProfile = async (req, res) => {
     if (token) {
       jwt.verify(token, jwtSecret, {}, async (err, userData) => {
         if (err) throw err;
-        const { name, email, _id } = await User.findById(userData.id);
+        try {
+          const { name, email, _id } = await User.findById(userData.id);
+          res.json({ name, email, _id });
+        } catch (error) {
+          res.status(500).send(error)
+        }
+        
   
-        res.json({ name, email, _id });
+        
       });
     }
 }

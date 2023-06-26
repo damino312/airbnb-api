@@ -41,7 +41,13 @@ const getBookingsOfUser = async (req, res) => {
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
     const { id: user } = userData;
-    res.json(await Booking.find({ user }).populate("place"));
+    try {
+      res.json(await Booking.find({ user }).populate("place"));
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: "Failed to get bookings of the user" });
+    }
+    
   });
 };
 
@@ -52,8 +58,14 @@ const deleteBooking = async (req, res) => {
     if (err) throw err;
     const { user } = await Booking.findById(id);
     if (user.toString() === userData.id) {
-      await Booking.findByIdAndDelete(id);
+      try {
+        await Booking.findByIdAndDelete(id);
       res.json("The booking has been deleted");
+      } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: "Failed to delete the booking" });
+      }
+      
     }
   });
 };
@@ -63,9 +75,15 @@ const getRequestsToMe = async (req, res) => {
 
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
-    res.json(
-      await Booking.find({ owner: userData.id, status: 0 }).populate("place")
-    );
+    try {
+      res.json(
+        await Booking.find({ owner: userData.id, status: 0 }).populate("place")
+      );
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: "Failed to get my requests" });
+    }
+    
   });
 };
 
@@ -74,12 +92,17 @@ const getHistoryRequestsToMe = async (req, res) => {
 
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
-    res.json(
-      await Booking.find({
-        owner: userData.id,
-        status: { $in: [1, 2] },
-      }).populate("place")
-    );
+    try {
+      res.json(
+        await Booking.find({
+          owner: userData.id,
+          status: { $in: [1, 2] },
+        }).populate("place")
+      );
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: "Failed to get the history of the requests" });
+    }
   });
 };
 
@@ -89,8 +112,14 @@ const changeStatusOfRequest = async (req, res) => {
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
     if (err) throw err;
     if (userData.id === ownerId) {
-      await Booking.findByIdAndUpdate(bookingId, { status: status });
-      res.json("The status has been changed");
+      try {
+        await Booking.findByIdAndUpdate(bookingId, { status: status });
+        res.json("The status has been changed");
+      } catch (error) {
+        console.error(error)
+      res.status(500).json({ error: "Failed to change the status of the request" });
+      }
+     
     }
   });
 };

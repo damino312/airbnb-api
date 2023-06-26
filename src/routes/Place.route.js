@@ -4,8 +4,8 @@ const app = express();
 const corsMiddleware = require("../middleWare/corsMiddleWare");
 const cookieParser = require("cookie-parser");
 
-const multer = require("multer"); // for adding photos
-const photosMiddleware = multer({ dest: "uploads" }); // for adding photos
+const multer = require("multer"); 
+const photosMiddleware = multer({ dest: "uploads" }); 
 
 const PlaceController = require("../controllers/Place.controller");
 
