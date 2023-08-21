@@ -30,6 +30,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const userDoc = await User.findOne({ email });
     if (userDoc) {
+      console.log(userDoc + "true")
       const passOk = bcrypt.compareSync(password, userDoc.password);
       if (passOk) {
         jwt.sign(
@@ -45,7 +46,7 @@ const login = async (req, res) => {
         res.status(422).json(`password is wrong`);
       }
     } else {
-      res.json("not found");
+      res.json(false);
     }
 }
 
